@@ -3,17 +3,20 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
+    `maven-publish`
 }
 
-dependencies {
-
-    compileOnly(gradleKotlinDsl())
-
-    compile(kotlin("gradle-plugin"))
-    compile(kotlin("stdlib-jdk8"))
-
+gradlePlugin {
+    (plugins) {
+        "git-version" {
+            id = "git-version"
+            implementationClass = "com.moonlitdoor.git.version.GitVersionPlugin"
+        }
+    }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+publishing {
+    repositories {
+        //        maven(url = "build/repository")
+    }
 }

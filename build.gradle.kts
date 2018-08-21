@@ -1,17 +1,13 @@
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 
 allprojects {
     group = "com.moonlitdoor.git-version"
     version = getGitVersionName()
-
-    repositories {
-        jcenter()
-    }
-
 }
 
 fun getGitVersionName(): String {
-    val stdout = ByteArrayOutputStream()
+    val stdout: OutputStream = ByteArrayOutputStream()
     exec {
         commandLine = listOf("git", "describe", "--tags")
         standardOutput = stdout
@@ -25,7 +21,6 @@ fun getGitStatus(version: String): String {
         commandLine = listOf("git", "status", "--porcelain")
         standardOutput = stdout
     }
-
     return if (stdout.toString().trim().isNotEmpty()) {
         if (version.contains("-g")) {
             val withOutHash = version.subSequence(0, version.indexOf("-g"))

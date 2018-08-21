@@ -4,9 +4,19 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import java.util.concurrent.TimeUnit
 
+@Suppress("Unused")
 class GitVersionPlugin : Plugin<Project> {
-    override fun apply(target: Project?) {
 
+    override fun apply(target: Project?) {
+        target?.let {
+            val gitCommitCount = getGitCommitCount(it)
+            val gitTagCount = getGitTagCount(it)
+            it.extensions.add("gitCommitCount", gitCommitCount)
+            it.extensions.add("gitTagCount", gitTagCount)
+            it.extensions.add("gitCommitAndTagCount", gitCommitCount + gitTagCount)
+            it.extensions.add("gitVersion", getGitVersion(it))
+            it.extensions.add("gitBranchName", getGitBranchName(it))
+        }
     }
 
     private fun getGitVersion(project: Project): String {
@@ -72,4 +82,14 @@ class GitVersionPlugin : Plugin<Project> {
         }
     }
 
+    private fun getGitBranchName(project: Project): String {
+        val command = listOf("git", "rev-parse", "--abbrev-ref", "HEAD")
+        val process = ProcessBuilder(command)
+                .directory(project.projectDir)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start()
+        process.waitFor(60, TimeUnit.SECONDS)
+        return getGitStatus(project, process.inputStream.bufferedReader().readText().trim())
+    }
 }
