@@ -1,5 +1,23 @@
-language: android
+language: java
 
 jdk: oraclejdk8
 
-script: ./gradlew build
+git:
+  depth: false
+
+branches:
+  only:
+  - master
+
+script: "./gradlew build"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: 0Bdok7DEzuLyRKTpDpViS+4hzPNmUvvabDn4UK5P/4sk0JTiMSnqMiFTwUgkOPXRo00rNcUx/Xg/9+aREmwUaeVEzjeddMF9PDoOHbPDfRcwwRJs9m7JUMy0ORaQRRjWJCqOWBT1fhhnre9X+I3FTXztbuMEeLceIxMtuDFc+V0RpcsBXKTgTrNOaKdnR9GwVelpr+L0GF++FhWsH+MpwRBqQMegiFQz9nx0SiP/D5CK4IHeapIWLI7C4xSk51PuqhihzDYJFJPVhJmcZnCNQDW+UmmeuKBRPIiFAwo7i0qbE1zJMR3dLFguf35gu95nEayyZ2G2RwGU9jzLG/xWfvz8oYL+b3KuwM8mmGHZb5Tz9C3TXdt7npSrgnnf9HYAN/FJY+CwfsMAmz7/7P3yQdaVw3d8dxUDt86tOlAfoz2kivu1m0mUbBQz9ZjdTSmIrgJTp8rPqN5+S/mIlXdhwpeHZlfyeK8piHMqDnUSQmqdxmCZSifUWbHguNN9WNuUJ0KFmoKnp6w/7/78XBAF+9PnBi2P9pwmgp80gD/54z4QvsSrcftkJMcZIrVXdzhCr0vKL1/nKjHxq8hOINSgF97jsK0ILDEAbUO6IK5O6Ds11kQgBF2UI9Omv8r6Wj2HuZ8h7ZYeF4y+9vtFLcfYkkeKpGx2uLk06bCZdX+WUCg=
+  skip_cleanup: true
+  file_glob: true
+  file: git-version/build/libs/git-version-*.jar
+  on:
+    tags: true
+    repo: moonlitdoor/mld-git-version
