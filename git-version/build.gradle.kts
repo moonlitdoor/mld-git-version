@@ -17,7 +17,7 @@ gradlePlugin {
 }
 
 pluginBundle {
-    website = "https://www.moonlitdoor.com"
+    website = "https://github.com/moonlitdoor/mld-git-version"
     vcsUrl = "https://github.com/moonlitdoor/mld-git-version"
     description = "A Gradle plugin that sets various properties available for use as the version based on the git repository."
     (plugins) {
