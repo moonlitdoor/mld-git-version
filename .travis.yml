@@ -21,16 +21,16 @@ env:
   - secure: Wj6qGOfF+3VExJ4Q/A6+fLvjU6YHguPJVITaiCiIiUgwk65kDQQgJFCQqoKn3ND174I1lful90j2QnQ7VaiTFdC2EWzgMu0wh2pCdYtiZG1tkvKe5M9eqWA3mh1ERNbyMZLg5g1XH/UsKwNj1m91xU7hkuXW1KS/lVgclo2UgCX2sqPJjYiAFrXQ+m6mC1/ZD5FzdbX8axF1xWVDFOeETUZeXbWduanMtmoT8T08mX9mB8hlf6ls6ILAxwC5oXVzicgPiIsnbMWi3tLL1XaUtsr9/AXFJDnJj51N0GnGu/RWtZdJMTKzN+bVsb84i2jJDNP4+8Fj/k7v1EsuMo3nhg1U+Wo9wDCcczaXZd+Y1tf+eyfgj5soewZpCZ7oyeGiHqh4XUL4duJtGb4twvz8meQJ42b/6f4zINJEnaWJNZU/JDCgVTyNrqqbHeMfQ20RjFCYzBSh49bXX6bP3piasWzvYg50QFb0OqyM0i1YOkN3vtPmK9EWl962XOitzXh3TtksoELZGLkkwFi6tiIqf/+cqCuAk8BvIMzQZyKL8JZA/9KVqxM+dr9YOzJViTTZP+Ev5gjp+WDeW5bJgPyqpUwjjCbM9C5OATCKlzwM8MVXXYwVKQyUwdCdkUKSFUBz6tYkvsRoA5WWBjJW8eBPYSKmbDL3tMp8qx4y2Lrg+xA=
 
 deploy:
-  provider: releases
-  api_key:
-    secure: Yw/h1aX1tbCr8xEiAN1OwDmbREwE3hawQ3nzTzNKe2nTZGq6jkXPwX7Lsm5uQh27bDBAu9VypbRcZbF7IXFwy5pTbIY9289bbOpDESFJvGtC54Ac/fv4ynKqsjkmL6DhfvjAsboC8prBKkDTdcRLMApJLOazZjrR2w8+T0cwtasT4cnRRwqdT47nPHyr9LOEEZYzcI6h4bWuqGzGLzTwrPRHsuIHmRxcU2aQ+16jA7a8CJUbingLRNlz/a1r6I90o7+NhSSr8hsHHHN6PjP+U9/nmmkX8C90sshXkwxo4VnCRu01Ty7ukTDeC8ZINVA/DYq3s2vaetL0ambJvBZ+hZPVy5b0pGf/AftpA85DLHNAzG7oSyftpHJ6Lfoh4y2yxnXhcJ+kYOZb4ti+Ri89ribEzXwMS2n0VThdofkCGDxYGIpgIUjDbnBFZA2MCoq9qLq/fFCUkL5uf3mBc0OhWF9Zi9bZKDGm+Z5wYFQCrfGmA47bGND76AHmcUCFbW6Obq0pOor+NBlv2wgWO6scnH+1UlCvpDFfGxYdQmKsJzJGNOpokWpqGA3vHwp0mhjaeFh1Z1r0u14AOk9fqgcYy7YwaTignlEqihsm8VYIkGrMC9NxTWvdydTYFbM39m75ureq3UDrtxYkB+/xBABcZ9TqvD+NX6a4Blgoi8IBXQ4=
-  skip_cleanup: true
-  file_glob: true
-  file: git-version/build/libs/git-version-*.jar
-  on:
-    tags: true
-    repo: moonlitdoor/mld-git-version
-  provider: script
-  script: "./gradlew publishPlugins -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET"
-  on:
-    tags: true
+  - provider: releases
+    api_key:
+      secure: Yw/h1aX1tbCr8xEiAN1OwDmbREwE3hawQ3nzTzNKe2nTZGq6jkXPwX7Lsm5uQh27bDBAu9VypbRcZbF7IXFwy5pTbIY9289bbOpDESFJvGtC54Ac/fv4ynKqsjkmL6DhfvjAsboC8prBKkDTdcRLMApJLOazZjrR2w8+T0cwtasT4cnRRwqdT47nPHyr9LOEEZYzcI6h4bWuqGzGLzTwrPRHsuIHmRxcU2aQ+16jA7a8CJUbingLRNlz/a1r6I90o7+NhSSr8hsHHHN6PjP+U9/nmmkX8C90sshXkwxo4VnCRu01Ty7ukTDeC8ZINVA/DYq3s2vaetL0ambJvBZ+hZPVy5b0pGf/AftpA85DLHNAzG7oSyftpHJ6Lfoh4y2yxnXhcJ+kYOZb4ti+Ri89ribEzXwMS2n0VThdofkCGDxYGIpgIUjDbnBFZA2MCoq9qLq/fFCUkL5uf3mBc0OhWF9Zi9bZKDGm+Z5wYFQCrfGmA47bGND76AHmcUCFbW6Obq0pOor+NBlv2wgWO6scnH+1UlCvpDFfGxYdQmKsJzJGNOpokWpqGA3vHwp0mhjaeFh1Z1r0u14AOk9fqgcYy7YwaTignlEqihsm8VYIkGrMC9NxTWvdydTYFbM39m75ureq3UDrtxYkB+/xBABcZ9TqvD+NX6a4Blgoi8IBXQ4=
+    skip_cleanup: true
+    file_glob: true
+    file: git-version/build/libs/git-version-*.jar
+    on:
+      tags: true
+      repo: moonlitdoor/mld-git-version
+  - provider: script
+    script: "./gradlew publishPlugins -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET"
+    on:
+      tags: true
