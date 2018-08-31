@@ -2,43 +2,33 @@ package com.moonlitdoor.git.version
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.util.concurrent.TimeUnit
+import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting
+import java.io.File
 
 @Suppress("Unused")
 class GitVersionPlugin : Plugin<Project> {
 
-    override fun apply(target: Project?) {
-        target?.let {
-            val gitCommitCount = getGitCommitCount(it)
-            val gitTagCount = getGitTagCount(it)
-            it.extensions.add("gitCommitCount", gitCommitCount)
-            it.extensions.add("gitTagCount", gitTagCount)
-            it.extensions.add("gitCommitAndTagCount", gitCommitCount + gitTagCount)
-            it.extensions.add("gitVersion", getGitVersion(it))
-            it.extensions.add("gitBranchName", getGitBranchName(it))
-        }
+    @VisibleForTesting
+    internal var git = GitFacade()
+
+    override fun apply(project: Project) {
+        val gitCommitCount = getGitCommitCount(project.projectDir)
+        val gitTagCount = getGitTagCount(project.projectDir)
+        project.extensions.add(GIT_COMMIT_COUNT, gitCommitCount)
+        project.extensions.add(GIT_TAG_COUNT, gitTagCount)
+        project.extensions.add(GIT_COMMIT_AND_TAG_COUNT, gitCommitCount + gitTagCount)
+        project.extensions.add(GIT_VERSION, getGitVersion(project.projectDir))
+        project.extensions.add(GIT_BRANCH_NAME, getGitBranchName(project.projectDir))
     }
 
-    private fun getGitVersion(project: Project): String {
-        val command = listOf("git", "describe", "--tags")
-        val process = ProcessBuilder(command)
-                .directory(project.projectDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-        process.waitFor(60, TimeUnit.SECONDS)
-        return getGitStatus(project, process.inputStream.bufferedReader().readText().trim())
+    private fun getGitVersion(projectDir: File): String {
+        val output = git.runCommand(projectDir, "git", "describe", "--tags")
+        return getGitStatus(projectDir, output)
     }
 
-    private fun getGitStatus(project: Project, version: String): String {
-        val command = listOf("git", "status", "--porcelain")
-        val process = ProcessBuilder(command)
-                .directory(project.projectDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-        process.waitFor(60, TimeUnit.SECONDS)
-        return if (process.inputStream.bufferedReader().readText().trim().isEmpty()) {
+    private fun getGitStatus(projectDir: File, version: String): String {
+        val output = git.runCommand(projectDir, "git", "status", "--porcelain")
+        return if (output.isEmpty()) {
             version
         } else {
             if (version.contains("-g")) {
@@ -50,46 +40,34 @@ class GitVersionPlugin : Plugin<Project> {
         }
     }
 
-    private fun getGitCommitCount(project: Project): Long {
-        val command = listOf("git", "rev-list", "--count", "HEAD")
-        val process = ProcessBuilder(command)
-                .directory(project.projectDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-        process.waitFor(60, TimeUnit.SECONDS)
-        val line = process.inputStream.bufferedReader().readText().trim()
-        return if (line.isNotEmpty()) {
-            line.toLong() + getGitTagCount(project)
+    private fun getGitCommitCount(projectDir: File): Long {
+        val output = git.runCommand(projectDir, "git", "rev-list", "--count", "HEAD")
+        return if (output.isNotEmpty()) {
+            output.toLong()
         } else {
             0
         }
     }
 
-    private fun getGitTagCount(project: Project): Long {
-        val command = listOf("git", "tag")
-        val process = ProcessBuilder(command)
-                .directory(project.projectDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-        process.waitFor(60, TimeUnit.SECONDS)
-        val line = process.inputStream.bufferedReader().readText().trim()
-        return if (line.isNotEmpty()) {
-            line.split("\n").size.toLong()
+    private fun getGitTagCount(projectDir: File): Long {
+        val output = git.runCommand(projectDir, "git", "tag")
+        return if (output.isNotEmpty()) {
+            output.split("\n").size.toLong()
         } else {
             0
         }
     }
 
-    private fun getGitBranchName(project: Project): String {
-        val command = listOf("git", "rev-parse", "--abbrev-ref", "HEAD")
-        val process = ProcessBuilder(command)
-                .directory(project.projectDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-        process.waitFor(60, TimeUnit.SECONDS)
-        return getGitStatus(project, process.inputStream.bufferedReader().readText().trim())
+    private fun getGitBranchName(projectDir: File): String {
+        return git.runCommand(projectDir, "git", "rev-parse", "--abbrev-ref", "HEAD")
     }
+
+    companion object {
+        const val GIT_COMMIT_COUNT = "gitCommitCount"
+        const val GIT_TAG_COUNT = "gitTagCount"
+        const val GIT_COMMIT_AND_TAG_COUNT = "gitCommitAndTagCount"
+        const val GIT_VERSION = "gitVersion"
+        const val GIT_BRANCH_NAME = "gitBranchName"
+    }
+
 }

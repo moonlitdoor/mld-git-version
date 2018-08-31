@@ -7,9 +7,17 @@ plugins {
     id("com.gradle.plugin-publish") version "0.10.0"
 }
 
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
+}
+
+dependencies {
+    testImplementation("junit:junit:4.12")
+}
+
 gradlePlugin {
-    (plugins) {
-        "git-version" {
+    plugins {
+        register("git-version") {
             id = "com.moonlitdoor.git-version"
             implementationClass = "com.moonlitdoor.git.version.GitVersionPlugin"
         }

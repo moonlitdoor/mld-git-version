@@ -4,6 +4,9 @@ import java.io.OutputStream
 allprojects {
     group = "com.moonlitdoor.git-version"
     version = getGitVersionName()
+    repositories {
+        jcenter()
+    }
 }
 
 fun getGitVersionName(): String {
