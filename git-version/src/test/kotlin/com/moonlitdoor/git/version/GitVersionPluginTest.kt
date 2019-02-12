@@ -1,5 +1,7 @@
 package com.moonlitdoor.git.version
 
+import com.moonlitdoor.git.version.extensions.BranchOffsetNestedExtension
+import com.moonlitdoor.git.version.extensions.MoonlitDoorExtension
 import org.gradle.kotlin.dsl.get
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -21,6 +23,32 @@ open class GitVersionPluginTest {
     fun testGitCommitCount() {
         val plugin = GitVersionPlugin()
         val project = FakeProject()
+        plugin.git = FakeGitFacade()
+        plugin.apply(project)
+
+        assertEquals(20L, project.extensions[GitVersionPlugin.GIT_COMMIT_COUNT])
+    }
+
+    @Test
+    fun testGitCommitCountBranchAlphaAlphaOffset1000() {
+        val plugin = GitVersionPlugin()
+        val project = FakeProject()
+        project.extensions.create(MoonlitDoorExtension.EXTENSION_NAME, MoonlitDoorExtension::class.java).offsets.add(BranchOffsetNestedExtension("alpha", 1_000))
+        plugin.git = object : FakeGitFacade() {
+            override fun getBranch(): String = "alpha"
+        }
+        plugin.apply(project)
+
+        assertEquals(1020L, project.extensions[GitVersionPlugin.GIT_COMMIT_COUNT])
+    }
+
+    @Test
+    fun testGitCommitCountBranchMasterAlphaOffset1000() {
+        val plugin = GitVersionPlugin()
+        val project = FakeProject()
+        project.extensions.create(MoonlitDoorExtension.EXTENSION_NAME, MoonlitDoorExtension::class.java).offsets.add(BranchOffsetNestedExtension("alpha").also {
+            it.offset = 1_000
+        })
         plugin.git = FakeGitFacade()
         plugin.apply(project)
 

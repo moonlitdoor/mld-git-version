@@ -1,5 +1,7 @@
 package com.moonlitdoor.git.version
 
+import com.moonlitdoor.git.version.extensions.BranchOffsetNestedExtension
+import com.moonlitdoor.git.version.extensions.MoonlitDoorExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting
@@ -12,13 +14,24 @@ class GitVersionPlugin : Plugin<Project> {
     internal var git = GitFacade()
 
     override fun apply(project: Project) {
-        val gitCommitCount = getGitCommitCount(project.projectDir)
+
+        if (project.extensions.findByType(MoonlitDoorExtension::class.java) == null) {
+            project.extensions.create(MoonlitDoorExtension.EXTENSION_NAME, MoonlitDoorExtension::class.java).offsets = project.container(BranchOffsetNestedExtension::class.java)
+        }
+
+        var gitCommitCount = getGitCommitCount(project.projectDir)
         val gitTagCount = getGitTagCount(project.projectDir)
+        val gitBranchName = getGitBranchName(project.projectDir)
+
+        val byType = project.extensions.getByType(MoonlitDoorExtension::class.java)
+        byType.offsets.find { Regex(it.name).matches(gitBranchName) }?.let {
+            gitCommitCount += it.offset
+        }
         project.extensions.add(GIT_COMMIT_COUNT, gitCommitCount)
         project.extensions.add(GIT_TAG_COUNT, gitTagCount)
         project.extensions.add(GIT_COMMIT_AND_TAG_COUNT, gitCommitCount + gitTagCount)
         project.extensions.add(GIT_VERSION, getGitVersion(project.projectDir))
-        project.extensions.add(GIT_BRANCH_NAME, getGitBranchName(project.projectDir))
+        project.extensions.add(GIT_BRANCH_NAME, gitBranchName)
     }
 
     private fun getGitVersion(projectDir: File): String {

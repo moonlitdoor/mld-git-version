@@ -15,7 +15,6 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.LoggingManager
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.*
-import org.gradle.api.provider.PropertyState
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.resources.ResourceHandler
@@ -36,6 +35,8 @@ class FakeProject : Project {
     override fun getProjectDir(): File = File("")
 
     override fun getExtensions(): ExtensionContainer = extensionContainer
+
+    override fun <T : Any?> container(type: Class<T>): NamedDomainObjectContainer<T> = FakeNamedDomainObjectContainer()
 
     override fun getGroup(): Any {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -113,10 +114,6 @@ class FakeProject : Project {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <T : Any?> property(clazz: Class<T>): PropertyState<T> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun property(propertyName: String): Any? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -154,10 +151,6 @@ class FakeProject : Project {
     }
 
     override fun allprojects(configureClosure: Closure<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun <T : Any?> container(type: Class<T>): NamedDomainObjectContainer<T> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

@@ -10,7 +10,7 @@ open class FakeGitFacade : GitFacade() {
             "gittag" -> "0.1.0\n0.0.4\n0.0.3\n0.0.2\n0.0.1\n0.0.0"
             "gitdescribe--tags" -> getTag()
             "gitstatus--porcelain" -> getStatus()
-            "gitrev-parse--abbrev-refHEAD" -> "master"
+            "gitrev-parse--abbrev-refHEAD" -> getBranch()
             else -> ""
         }
     }
@@ -18,4 +18,6 @@ open class FakeGitFacade : GitFacade() {
     open fun getTag(): String = "0.0.0"
 
     open fun getStatus(): String = ""
+
+    open fun getBranch(): String = "master"
 }

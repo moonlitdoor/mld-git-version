@@ -1,5 +1,6 @@
 package com.moonlitdoor.git.version
 
+import com.moonlitdoor.git.version.extensions.MoonlitDoorExtension
 import org.gradle.api.Action
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.ExtensionsSchema
@@ -8,11 +9,31 @@ import org.gradle.api.reflect.TypeOf
 
 class FakeExtensionContainer : ExtensionContainer {
 
-    private val container = mutableMapOf<String, Any>()
+    private val container = mutableMapOf<String, Any?>()
 
     override fun add(name: String, extension: Any) {
         container[name] = extension
     }
+
+    override fun <T : Any?> create(name: String, type: Class<T>, vararg constructionArguments: Any?): T = type.newInstance().also {
+        if (it is MoonlitDoorExtension) {
+            it.offsets = FakeNamedDomainObjectContainer()
+        }
+        container[name] = it
+    }
+
+    override fun getByName(name: String): Any = container[name]!!
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any?> findByType(type: Class<T>): T? = container.values.find {
+        type.isInstance(it)
+    } as T?
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any?> getByType(type: Class<T>): T = container.values.find {
+        type.isInstance(it)
+    } as T
+
 
     override fun <T : Any?> configure(type: Class<T>, action: Action<in T>) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -42,15 +63,6 @@ class FakeExtensionContainer : ExtensionContainer {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <T : Any?> create(name: String, type: Class<T>, vararg constructionArguments: Any?): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getByName(name: String): Any = container[name]!!
-//    {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-
     override fun findByName(name: String): Any? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -67,15 +79,7 @@ class FakeExtensionContainer : ExtensionContainer {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <T : Any?> getByType(type: Class<T>): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun <T : Any?> getByType(type: TypeOf<T>): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun <T : Any?> findByType(type: Class<T>): T? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

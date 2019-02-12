@@ -4,7 +4,15 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.moonlitdoor.git-version:git-version:0.0.7-1-SNAPSHOT"
+        classpath "com.moonlitdoor.git-version:git-version:0.0.8-8-SNAPSHOT"
+    }
+}
+
+apply plugin: "com.moonlitdoor.git-version-config"
+
+mld.offsets {
+    master {
+        offset = 1_000_000
     }
 }
 

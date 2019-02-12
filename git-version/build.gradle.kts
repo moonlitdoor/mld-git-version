@@ -21,6 +21,10 @@ gradlePlugin {
             id = "com.moonlitdoor.git-version"
             implementationClass = "com.moonlitdoor.git.version.GitVersionPlugin"
         }
+        register("git-version-config") {
+            id = "com.moonlitdoor.git-version-config"
+            implementationClass = "com.moonlitdoor.git.version.GitVersionConfigPlugin"
+        }
     }
 }
 
@@ -31,6 +35,10 @@ pluginBundle {
     (plugins) {
         "git-version" {
             displayName = "Git Version Plugin"
+            tags = listOf("git", "version", "android", "java")
+        }
+        "git-version-config" {
+            displayName = "Git Version Plugin Configuration"
             tags = listOf("git", "version", "android", "java")
         }
     }
