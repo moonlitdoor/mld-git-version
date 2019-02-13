@@ -22,15 +22,15 @@ class GitVersionPlugin : Plugin<Project> {
         var gitCommitCount = getGitCommitCount(project.projectDir)
         val gitTagCount = getGitTagCount(project.projectDir)
         val gitBranchName = getGitBranchName(project.projectDir)
+        val gitVersion = getGitVersion(project.projectDir)
 
-        val byType = project.extensions.getByType(MoonlitDoorExtension::class.java)
-        byType.offsets.find { Regex(it.name).matches(gitBranchName) }?.let {
+        project.extensions.getByType(MoonlitDoorExtension::class.java).offsets.find { Regex(it.name).matches(gitBranchName) || Regex(it.name).matches(gitVersion) }?.let {
             gitCommitCount += it.offset
         }
         project.extensions.add(GIT_COMMIT_COUNT, gitCommitCount)
         project.extensions.add(GIT_TAG_COUNT, gitTagCount)
         project.extensions.add(GIT_COMMIT_AND_TAG_COUNT, gitCommitCount + gitTagCount)
-        project.extensions.add(GIT_VERSION, getGitVersion(project.projectDir))
+        project.extensions.add(GIT_VERSION, gitVersion)
         project.extensions.add(GIT_BRANCH_NAME, gitBranchName)
     }
 
